@@ -23,6 +23,11 @@ This extension uses schemas defined in VSCode settings.
       }
     ]
 
+
+![screen-shot-01.png](xtras/screen-shot-01.png?raw=true)
+
+![screen-shot-02.png](xtras/screen-shot-02.png?raw=true)
+
 ## Contributions
 
 Contents of the /server/src/yaml folder are from the following repos, with modifications:
