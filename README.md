@@ -43,6 +43,11 @@ PetStore schemas were from the following repo:
 - https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-expanded.json
 
 
+## Useful Info
+
+- https://code.visualstudio.com/docs/tools/vscecli
+- https://github.com/Microsoft/vscode-docs/blob/master/docs/extensionAPI/extension-manifest.md
+
 ## License
 [MIT](LICENSE.txt)
 

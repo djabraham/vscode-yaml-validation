@@ -1,5 +1,5 @@
 {
-	"name": "yaml-language-service",
+	"name": "vscode-yaml-validation-server",
 	"description": "YAML language server.",
 	"version": "0.0.1",
 	"publisher": "djabraham",
