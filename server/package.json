@@ -1,0 +1,23 @@
+{
+	"name": "yaml-language-service",
+	"description": "YAML language server.",
+	"version": "0.0.1",
+	"publisher": "djabraham",
+	"license": "MIT",
+	"engines": {
+		"node": "*"
+	},
+	"dependencies": {
+		"request-light": "^0.1.0",
+		"jsonc-parser": "^0.2.0",
+		"vscode-languageserver": "^1.4.1",
+		"vscode-nls": "^1.0.4"
+	},
+	"devDependencies": {
+		"typescript": "^1.8.9"
+	},
+	"scripts": {
+		"compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
+		"watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p ."
+	}
+}
