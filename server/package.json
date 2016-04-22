@@ -3,6 +3,9 @@
 	"description": "YAML language server.",
 	"version": "0.0.1",
 	"publisher": "djabraham",
+	"repository": {
+		"url": "https://github.com/djabraham/vscode-yaml-validation.git"
+	},
 	"license": "MIT",
 	"engines": {
 		"node": "*"

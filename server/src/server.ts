@@ -130,16 +130,16 @@ documents.onDidChangeContent((change) => {
 });
 
 // hold the maxNumberOfProblems setting
-let maxNumberOfProblems: number;
+let maxValidationIssues: number;
 
 // These are the example settings we defined in the client's package.json
 interface YamlSettings {
-	maxNumberOfProblems: number;
+	maxValidationIssues: number;
 }
 
 // The settings interface describe the server relevant settings part
 interface Settings {
-	languageServerYamlSchema: YamlSettings;
+	yaml: YamlSettings;
 	json: {
 		schemas: JSONSchemaSettings[];
 	};
@@ -163,8 +163,7 @@ connection.onDidChangeConfiguration((change) => {
 	let settings = <Settings>change.settings;
 	configureHttpRequests(settings.http && settings.http.proxy, settings.http && settings.http.proxyStrictSSL);
 
-	maxNumberOfProblems = settings.languageServerYamlSchema.maxNumberOfProblems || 100;
-
+	maxValidationIssues = (settings.yaml && settings.yaml.maxValidationIssues) || 100;
 
 	jsonConfigurationSettings = settings.json && settings.json.schemas;
 	updateConfiguration();
