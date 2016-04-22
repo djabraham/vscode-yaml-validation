@@ -4,7 +4,12 @@
 
 This is a work in progress/early release version, of a VSCode extension for YAML validation against a JSON schema.
 
-This extension uses schemas defined in VSCode settings.
+![screen-shot-01.png](xtras/screen-shot-01.png?raw=true)
+
+![screen-shot-02.png](xtras/screen-shot-02.png?raw=true)
+
+
+This extension uses json.schemas definitions that it finds in the standard VSCode settings file.
 
 **.vscode/settings.json**
 
@@ -18,15 +23,11 @@ This extension uses schemas defined in VSCode settings.
         "url": "http://json.schemastore.org/babelrc
       },
       {
-        "fileMatch": [ "**/swagger.yaml" ],
+        "fileMatch": [ "**/swagger.yaml", "**/swagger.json" ],
         "url": "http://json.schemastore.org/swagger-2.0"
       }
     ]
 
-
-![screen-shot-01.png](xtras/screen-shot-01.png?raw=true)
-
-![screen-shot-02.png](xtras/screen-shot-02.png?raw=true)
 
 ## Contributions
 
