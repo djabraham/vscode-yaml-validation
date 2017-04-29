@@ -6,16 +6,29 @@
 
 import * as path from 'path';
 
-import {workspace, languages, ExtensionContext, extensions, Uri} from 'vscode';
-import {LanguageClient, LanguageClientOptions, SettingMonitor, RequestType, ServerOptions, TransportKind, NotificationType} from 'vscode-languageclient';
+// import {workspace, languages, ExtensionContext, extensions, Uri} from 'vscode';
+// import {LanguageClient, LanguageClientOptions, SettingMonitor, RequestType, ServerOptions, TransportKind, NotificationType} from 'vscode-languageclient';
 // import TelemetryReporter from 'vscode-extension-telemetry';
+import { workspace, languages, ExtensionContext, extensions, Uri, Range } from 'vscode';
+import { LanguageClient, LanguageClientOptions, RequestType, ServerOptions, TransportKind, NotificationType } from 'vscode-languageclient';
+import TelemetryReporter from 'vscode-extension-telemetry';
+import { activateColorDecorations } from "./colorDecorators";
+
+import * as nls from 'vscode-nls';
+let localize = nls.loadMessageBundle();
+
+
 
 namespace TelemetryNotification {
-	export const type: NotificationType<{ key: string, data: any }> = { get method() { return 'telemetry'; } };
+  export const type = new NotificationType<{ key: string, data: any }, void>('telemetry');
 }
 
 namespace VSCodeContentRequest {
-	export const type: RequestType<string, string, any> = { get method() { return 'vscode/content'; } };
+	export const type: RequestType<string, string, any, any> = new RequestType('vscode/content');
+}
+
+namespace ColorSymbolRequest {
+	export const type: RequestType<string, Range[], any, any> = new RequestType('json/colorSymbols');
 }
 
 export interface ISchemaAssociations {
@@ -23,7 +36,7 @@ export interface ISchemaAssociations {
 }
 
 namespace SchemaAssociationNotification {
-	export const type: NotificationType<ISchemaAssociations> = { get method() { return 'json/schemaAssociations'; } };
+	export const type: NotificationType<ISchemaAssociations, any> = new NotificationType('json/schemaAssociations');
 }
 
 interface IPackageInfo {
@@ -35,7 +48,8 @@ interface IPackageInfo {
 export function activate(context: ExtensionContext) {
 
 	let packageInfo = getPackageInfo(context);
-	// let telemetryReporter: TelemetryReporter = packageInfo && new TelemetryReporter(packageInfo.name, packageInfo.version, packageInfo.aiKey);
+	let telemetryReporter: TelemetryReporter = packageInfo && new TelemetryReporter(packageInfo.name, packageInfo.version, packageInfo.aiKey);
+	context.subscriptions.push(telemetryReporter);
 
 	// Resolve language ids to pass around as initialization data
 	languages.getLanguages().then(languageIds => {
@@ -67,26 +81,36 @@ export function activate(context: ExtensionContext) {
 		};
 
 		// Create the language client and start the client.
-  	let client = new LanguageClient('Language Server YAML Schema', serverOptions, clientOptions);
-		client.onNotification(TelemetryNotification.type, e => {
-			// if (telemetryReporter) {
-			// 	telemetryReporter.sendTelemetryEvent(e.key, e.data);
-			// }
-		});
+    let client = new LanguageClient('json', 'Language Server YAML Schema', serverOptions, clientOptions);
+    let disposable = client.start();
+    client.onReady().then(() => {
+      client.onTelemetry(e => {
+        if (telemetryReporter) {
+          telemetryReporter.sendTelemetryEvent(e.key, e.data);
+        }
+  		});
 
-		// handle content request
-		client.onRequest(VSCodeContentRequest.type, (uriPath: string) => {
-			let uri = Uri.parse(uriPath);
-			return workspace.openTextDocument(uri).then(doc => {
-				return doc.getText();
-			}, error => {
-				return Promise.reject(error);
-			});
-		});
+      // handle content request
+      client.onRequest(VSCodeContentRequest.type, (uriPath: string) => {
+        let uri = Uri.parse(uriPath);
+        return workspace.openTextDocument(uri).then(doc => {
+          return doc.getText();
+        }, error => {
+          return Promise.reject(error);
+        });
+      });
 
-		let disposable = client.start();
+      client.sendNotification(SchemaAssociationNotification.type, getSchemaAssociation(context));
 
-		client.sendNotification(SchemaAssociationNotification.type, getSchemaAssociation(context));
+      // let colorRequestor = (uri: string) => {
+      //   return client.sendRequest(ColorSymbolRequest.type, uri).then(ranges => ranges.map(client.protocol2CodeConverter.asRange));
+      // };
+      // let isDecoratorEnabled = (languageId: string) => {
+      //   return workspace.getConfiguration().get<boolean>(languageId + '.colorDecorators.enable');
+      // };
+      // disposable = activateColorDecorations(colorRequestor, { json: true }, isDecoratorEnabled);
+      // context.subscriptions.push(disposable);
+    });
 
 		// Push the disposable to the context's subscriptions so that the
 		// client can be deactivated on extension deactivation
@@ -105,8 +129,8 @@ export function activate(context: ExtensionContext) {
 	});
 }
 
-function getSchemaAssociation(context: ExtensionContext) : ISchemaAssociations {
-	let associations : ISchemaAssociations = {};
+function getSchemaAssociation(context: ExtensionContext): ISchemaAssociations {
+	let associations: ISchemaAssociations = {};
 	extensions.all.forEach(extension => {
 		let packageJSON = extension.packageJSON;
 		if (packageJSON && packageJSON.contributes && packageJSON.contributes.jsonValidation) {

@@ -1,7 +1,7 @@
 {
 	"name": "vscode-yaml-validation-server",
 	"description": "YAML language server.",
-	"version": "0.0.1",
+	"version": "0.2.0",
 	"publisher": "djabraham",
 	"repository": {
 		"url": "https://github.com/djabraham/vscode-yaml-validation.git"
@@ -13,11 +13,16 @@
 	"dependencies": {
 		"request-light": "^0.1.0",
 		"jsonc-parser": "^0.2.0",
-		"vscode-languageserver": "^1.4.1",
-		"vscode-nls": "^1.0.4"
+ 		"vscode-nls": "^1.0.4",
+    "minimatch": "^3.0.0",
+    "vscode-languageserver": "^3.0.3",
+    "semver": "^5.1.0"
 	},
 	"devDependencies": {
-		"typescript": "^1.8.9"
+    "@types/minimatch": "^2.0.29",
+    "@types/semver": "^5.3.30",
+    "@types/node": "^6.0.41",
+    "typescript": "^2.0.3"
 	},
 	"scripts": {
 		"compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",

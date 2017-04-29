@@ -1688,7 +1688,7 @@ function exportResult(state: State) {
       if ((<any>Number).isInteger(value) && ((value >> 0) === value)) {
         s.isInteger = true;
       }
-    } else if (vtype === 'null') {
+    } else if (<any>vtype === 'null') {
       s.type = <YamlInterface.NodeType>vtype;
     } else if (vtype === 'boolean') {
       s.type = <YamlInterface.NodeType>vtype;

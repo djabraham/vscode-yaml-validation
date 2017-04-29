@@ -7,8 +7,8 @@
 import {
 	IPCMessageReader, IPCMessageWriter,
 	createConnection, IConnection, TextDocumentSyncKind,
-	TextDocuments, ITextDocument, Diagnostic, DiagnosticSeverity,
-	InitializeParams, InitializeResult, TextDocumentIdentifier, TextDocumentPosition, CompletionList,
+	TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
+	InitializeParams, InitializeResult, TextDocumentIdentifier, TextDocumentPositionParams, CompletionList,
 	CompletionItem, CompletionItemKind, NotificationType, RequestType
 } from 'vscode-languageserver';
 
@@ -26,15 +26,15 @@ import {JSONCompletion} from './json/jsonCompletion';
 import { parse as parseYaml, ObjectASTNode, YAMLDocument } from './yaml/yamlParser';
 
 namespace TelemetryNotification {
-	export const type: NotificationType<{ key: string, data: any }> = { get method() { return 'telemetry'; } };
+	export const type = new NotificationType<{ key: string, data: any }, void>('telemetry');
 }
 
 namespace SchemaAssociationNotification {
-	export const type: NotificationType<ISchemaAssociations> = { get method() { return 'json/schemaAssociations'; } };
+	export const type: NotificationType<ISchemaAssociations, any> = new NotificationType('json/schemaAssociations');
 }
 
 namespace VSCodeContentRequest {
-	export const type: RequestType<string, string, any> = { get method() { return 'vscode/content'; } };
+	export const type: RequestType<string, string, any, any> = new RequestType('vscode/content');
 }
 
 // Create a connection for the server. The connection uses
@@ -214,7 +214,7 @@ function updateConfiguration() {
 }
 
 // This is where the magic begins
-function validateTextDocument(textDocument: ITextDocument): void {
+function validateTextDocument(textDocument: TextDocument): void {
 
 	// Gets a parsed document (AST)
 	let yamlDocument = parseYaml(textDocument.getText(), null);
@@ -274,13 +274,13 @@ connection.onDidChangeWatchedFiles((change) => {
 	}
 });
 
-function getJSONDocument(document: ITextDocument): JSONDocument {
+function getJSONDocument(document: TextDocument): JSONDocument {
 	return parseJSON(document.getText());
 }
 
 // This handler provides the initial list of the completion items.
-connection.onCompletion((textDocumentPosition: TextDocumentPosition): Thenable<CompletionList> => {
-	let document = documents.get(textDocumentPosition.uri);
+connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Thenable<CompletionList> => {
+	let document = documents.get(textDocumentPosition.textDocument.uri);
 	let jsonDocument = getJSONDocument(document);
 	return jsonCompletion.doSuggest(document, textDocumentPosition, jsonDocument);
 });
@@ -289,7 +289,7 @@ connection.onCompletionResolve((item: CompletionItem) : Thenable<CompletionItem>
 	return jsonCompletion.doResolve(item);
 });
 
-// connection.onHover((textDocumentPosition: TextDocumentPosition): Thenable<Hover> => {
+// connection.onHover((textDocumentPosition: TextDocumentPositionParams): Thenable<Hover> => {
 // 	let document = documents.get(textDocumentPosition.uri);
 // 	let jsonDocument = getJSONDocument(document);
 // 	return jsonHover.doHover(document, textDocumentPosition, jsonDocument);

@@ -1,0 +1,13 @@
+{
+  "name": "vscode-yaml-validation",
+  "displayName": "vscode-yaml-validation",
+  "description": "Unbrella project for YAML Validation VSCode extension client and server",
+  "version": "0.2.0",
+  "publisher": "djabraham",
+  "author": "djabraham",
+  "main": " ",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djabraham/vscode-yaml-validation.git"
+  }
+}
