@@ -1,4 +1,8 @@
-#vscode-yaml-validation
+vscode-yaml-validation
+===
+
+#### Superceeded - A new YAML Language Server Plugin has been published, and seems more promising overall. I defer to vscode-yaml now. ([marketplace](https://marketplace.visualstudio.com/items?itemName=adamvoss.yaml)/[GitHub](https://github.com/adamvoss/vscode-yaml))
+
 
 ## Description
 
