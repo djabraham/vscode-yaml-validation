@@ -1,8 +1,9 @@
 vscode-yaml-validation
 ===
 
-#### Superceeded - A new YAML Language Server Plugin has been published, and seems more promising overall. I defer to vscode-yaml now. ([marketplace](https://marketplace.visualstudio.com/items?itemName=adamvoss.yaml)/[GitHub](https://github.com/adamvoss/vscode-yaml))
+#### Superceeded: Thanks for visiting, but there are much newer and better YAML Language Server Plugins available now. I created this when there was nothing else available. But I was never really able to adequately commit to this effort, so I happily defer to the more robust versions now. 
 
+#### Note: This is not the best starting point, if you're interested in creating VS Code Extensions. They released an updated template for this type of application, right after it was released. Start with the latest examples and documentation provided by the makers of VS Code, and you might save yourself a great deal of effort later on.
 
 ## Description
 
